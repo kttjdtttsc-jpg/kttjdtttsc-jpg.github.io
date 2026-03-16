@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Digital Footprinter</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <h1>Digital Footprinter</h1>
+            <p>See what your browser reveals about you every time you visit a site.</p>
+        </header>
+        
+        <main>
+            <section id ="intro">
+                <h2>What is Browser Fingerpinting?</h2>
+                <p>Everytme you visit a website, your browser leaks info about your device, settings, and capabilities. Thus data can be combined to create a unique "fingerprint" that can track you across the web, even without cookies. </p>
+                <button id="scan-btn">Scan My Footprint</button>
+            </section>
+
+            <section id="results" class="hidden">
+                <h2>Your Digital Footprint</h2>
+                <div id="score-container"></div>
+                <div id="data-container"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built for educational purposes. No data is collected or stored.</p>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
+</html>
