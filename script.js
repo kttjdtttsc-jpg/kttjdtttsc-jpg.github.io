@@ -1,5 +1,3 @@
-console.log('script loaded');
-
 const scanBtn = document.getElementById('scan-btn');
 const resultsSection = document.getElementById('results');
 const dataContainer = document.getElementById('data-container');
@@ -8,8 +6,7 @@ const scoreContainer = document.getElementById('score-container');
 const calculateScore = (data) => {
     let score = 0;
     let total = 0;
-    console.log('cookies:', data[4].value);
-    console.log('online:', data[5].value); 
+    
 
     // Check if cookies are enabled (more trackable)
     total++;
@@ -41,7 +38,41 @@ const calculateScore = (data) => {
     return percentage;
 };
 
+const getCanvasFingerprint = () => {
+    // Create a canvas element (not added to the page)
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 50;
 
+    // Get the drawing content
+    const ctx = canvas.getContext('2d');
+
+    // Draw text with specific styling
+    ctx.textBaseline = 'top';
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#333';
+    ctx.fillText('Fingerprint test 123', 2, 2);
+
+    // Draw a colored shape
+    ctx.fillStyle = '#00ff88';
+    ctx.fillRect(100, 10, 80, 30);
+
+    // Extract the canvas data as a string
+    const dataUrl = canvas.toDataURL();
+
+    return dataUrl;
+};
+
+const simpleHash = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash += str.charCodeAt(i);
+        hash = hash & hash;
+    }
+    return Math.abs(hash).toString(16);
+};
 
 
 scanBtn.addEventListener('click', () => {
@@ -53,7 +84,8 @@ scanBtn.addEventListener('click', () => {
     { label: 'Cookies Enabled', value: navigator.cookieEnabled },
     { label: 'Online Status', value: navigator.onLine },
     { label: 'Screen Resolution', value: `${window.screen.width}x${window.screen.height}`},
-    { label: 'Timezone', value: Intl.DateTimeFormat().resolvedOptions().timeZone} 
+    { label: 'Timezone', value: Intl.DateTimeFormat().resolvedOptions().timeZone},
+    { label: 'Canvas Fingerprint', value: simpleHash(getCanvasFingerprint()) },
    ];
 
    // Clear any previous results
