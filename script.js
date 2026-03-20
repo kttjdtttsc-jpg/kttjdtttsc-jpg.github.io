@@ -6,33 +6,20 @@ const scoreContainer = document.getElementById('score-container');
 const calculateScore = (data) => {
     let score = 0;
     let total = 0;
+    const fallbacks = ['Not set', 'Not available', 'Unknown', 'WebGL not supported', 'WebGL debug info not supported'];
+   
     
+    // Check each data point for exposure 
+    for (let i = 0; i < data.length; i++) {
+        total++;
+        const val = data[i].value;
 
-    // Check if cookies are enabled (more trackable)
-    total++;
-    if (data[4].value) {
-        score++;
+        // If the value exists and doesn't match the fall backs, it's exposed 
+        if (val && !fallbacks.includes(val)) {
+            score++;
+        }
     }
-
-    // Check if online status is true
-    total++;
-    if (data[5].value === true) {
-        score++;
-    }
-
-    // Check if screen resolution is common (easier to blend in)
-    total++;
-    const commonWidths = [1920, 1440, 1536, 1366];
-    if (!commonWidths.includes(screen.width)) {
-        score++;
-    }
-
-    // Check color depth (uncommon depth = more unique)
-    total++;
-    if (screen.colorDepth !== 24) {
-        score++;
-    }
-
+   
     // Calculate percentage
     const percentage = Math.floor((score / total) * 100);
     return percentage;
@@ -68,10 +55,25 @@ const simpleHash = (str) => {
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
-        hash += str.charCodeAt(i);
         hash = hash & hash;
     }
     return Math.abs(hash).toString(16);
+};
+
+const getWebGLInfo = () => {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {
+        return 'WebGL not supported';
+    }
+
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    if (!debugInfo) {
+        return 'WebGL debug info not supported';
+    }
+
+    return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
 };
 
 
@@ -86,13 +88,17 @@ scanBtn.addEventListener('click', () => {
     { label: 'Screen Resolution', value: `${window.screen.width}x${window.screen.height}`},
     { label: 'Timezone', value: Intl.DateTimeFormat().resolvedOptions().timeZone},
     { label: 'Canvas Fingerprint', value: simpleHash(getCanvasFingerprint()) },
+    { label: 'WebGL Info', value: getWebGLInfo() },
+    { label: 'Do Not Track', value: navigator.doNotTrack || 'Not set'},
+    { label: 'Hardware Concurrency', value: navigator.hardwareConcurrency || 'Unknown'},
+    { label: 'Device Memory', value: navigator.deviceMemory ? navigator.deviceMemory + 'GB' : 'Not available'  },
    ];
 
    // Clear any previous results
    dataContainer.innerHTML = '';
    scoreContainer.innerHTML = '';
 
-   // Loop through the array and create eloements for each data point
+   // Loop through the array and create elements for each data point
    for (let i = 0; i < footprint.length; i++) {
     const card = document.createElement('div');
     card.classList.add('data-card');
@@ -132,12 +138,7 @@ scanBtn.addEventListener('click', () => {
    `;
    scoreContainer.appendChild(scoreCard);
 
-
-
    // Reveal the results section
    resultsSection.classList.remove('hidden');
 
-
-
-   console.log(footprint);
 });

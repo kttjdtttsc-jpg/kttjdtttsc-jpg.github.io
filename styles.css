@@ -29,7 +29,7 @@ header p {
 
 main {
     max-width: 800px;
-    margin: 0 auto;;
+    margin: 0 auto;
     padding: 20px;
 }
 
@@ -127,6 +127,7 @@ footer {
     header h1 {
         font-size: 1.4rem;
     }
+
 
     header p {
         font-size: .9rem;
